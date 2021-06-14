@@ -1,2 +1,3 @@
 setEnvVariable.ps1
 .history/*
+terraform/.terraform/*
