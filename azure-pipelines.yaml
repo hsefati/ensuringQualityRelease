@@ -1,5 +1,6 @@
 trigger:
   none
+  
 
 name: Azure Pipelines
 variables:
