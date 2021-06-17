@@ -21,3 +21,7 @@ stages:
         targetType: 'inline'
         script: |
           ls /home/vsts/work/_temp/
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: '0.13.4'
