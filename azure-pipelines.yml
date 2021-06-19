@@ -24,3 +24,12 @@ stages:
     - task: TerraformInstaller@0
       inputs:
         terraformVersion: '0.12.3'
+    - task: TerraformTaskV2@2
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        backendServiceArm: 'EnsureReleaseQulaity'
+        backendAzureRmResourceGroupName: 'tstate'
+        backendAzureRmStorageAccountName: 'tstate2475'
+        backendAzureRmContainerName: 'tstate'
