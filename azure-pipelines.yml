@@ -25,10 +25,10 @@ stages:
       inputs:
         targetType: 'inline'
         script: |
-          export ARM_CLIENT_ID = ${ARM_CLIENT_ID}
-          export ARM_CLIENT_SECRET = ${ARM_CLIENT_SECRET}
-          export ARM_TENANT_ID = ${ARM_TENANT_ID}
-          export ARM_ACCESS_KEY = ${ARM_ACCESS_KEY}
+          export ARM_CLIENT_ID='${ARM_CLIENT_ID}'
+          export ARM_CLIENT_SECRET='${ARM_CLIENT_SECRET}'
+          export ARM_TENANT_ID='${ARM_TENANT_ID}'
+          export ARM_ACCESS_KEY='${ARM_ACCESS_KEY}'
     - task: TerraformInstaller@0
       inputs:
         terraformVersion: '0.12.3'
