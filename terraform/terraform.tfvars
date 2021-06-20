@@ -1,3 +1,9 @@
+# Azure GUIDS
+subscription_id = "21da1d8e-7cce-41d0-9f89-3d93ab96c83c"
+client_id = "c22c4270-fa96-4a67-86e5-459b46c37111"
+client_secret = "hJk2k~Ja~gN8_9_ak3DqE.UkYSS6dsMUN7"
+tenant_id = "e3a1933e-0bcc-4f41-b528-fa6a9f1db195"
+
 # Resource Group/Location
 location = "East US"
 resource_group = "ensuringReleaseQuality"
