@@ -11,7 +11,14 @@ stages:
   jobs: 
   - job: ProvisioningAppService
     displayName: Provisioning AppService
+    pool:
+      vmImage: 'ubuntu-18.04'
     steps:
+    - task: DownloadSecureFile@1
+      name: tfvardef
+      displayName: Download terraform.tfvars
+      inputs:
+        secureFile: 'terraform.tfvars'
     - task: InstallSSHKey@0
       inputs:
         knownHostsEntry: 'default'
@@ -21,6 +28,17 @@ stages:
         targetType: 'inline'
         script: |
           ls /home/vsts/work/_temp/
+    
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform/'
+      
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'ls $(System.DefaultWorkingDirectory)/terraform/'
+    
     - task: TerraformInstaller@0
       displayName: Install Terraform
       inputs:
