@@ -27,6 +27,12 @@ stages:
       inputs:
         terraformVersion: '0.13.4'
     
-    - script: 'terraform init -backend-config="access_key=$(arm_access_key)"'
-      workingDirectory: terraform
-      displayName: 'Terraform init'
+    - task: TerraformTaskV2@2
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: 'EnsureReleaseQulaity'
+        backendAzureRmResourceGroupName: 'tstate'
+        backendAzureRmStorageAccountName: 'tstate2475'
+        backendAzureRmContainerName: 'tstate'
+        backendAzureRmKey: 'terraform.tfstate'
