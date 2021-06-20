@@ -6,7 +6,6 @@ name: Azure Pipelines
 variables:
   python.version: '3.7.6'
   terraformPlanOutput: 'solution.plan'
-
 stages:
 - stage: Provisioning
   displayName: Provisioning
@@ -61,11 +60,102 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         commandOptions: '-out $(terraformPlanOutput)'
         environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
+
+- stage: Build
+  jobs:
+  - job: build_artifacts
+    displayName: Build Artifacts
+    pool:
+      vmImage: 'ubuntu-18.04'
+    steps:
+    - task: ArchiveFiles@2
+      displayName: Archive FakeRestAPI
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/fakerestapi'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/fakerestapi-$(Build.BuildId).zip'
+        verbose: true
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish FakeRestAPI artifact
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/fakerestapi-$(Build.BuildId).zip'
+        artifactName: 'drop-fakerestapi'
+
+    - task: ArchiveFiles@2
+      displayName: Archive Selenium
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
+        verbose: true
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Selenium artifact
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
+        artifactName: 'drop-selenium'
+
+- stage: Wait
+  jobs:
+    - job: RunsOnServer
+      pool: Server
+      steps:
+      - task: Delay@1
+        inputs:
+          delayForMinutes: '2'
+
+- stage: Delete deployed resources
+  displayName: Delete deployed resources
+  jobs: 
+  - job: ProvisioningAppService
+    displayName: Provisioning AppService
+    pool:
+      vmImage: 'ubuntu-18.04'
+    steps:
+    - task: DownloadSecureFile@1
+      name: tfvardef
+      displayName: Download terraform.tfvars
+      inputs:
+        secureFile: 'terraform.tfvars'
+    - task: InstallSSHKey@0
+      inputs:
+        knownHostsEntry: 'default'
+        sshKeySecureFile: 'id_rsa'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          ls /home/vsts/work/_temp/
+    
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform/'
+    
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: '1.0.0'
     
     - task: TerraformTaskV2@2
+      displayName: Terraform Init
       inputs:
         provider: 'azurerm'
-        command: 'apply'
-        commandOptions: '$(terraformPlanOutput)'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        backendServiceArm: 'EnsureReleaseQulaity'
+        backendAzureRmResourceGroupName: 'tstate'
+        backendAzureRmStorageAccountName: 'tstate2475'
+        backendAzureRmContainerName: 'tstate'
+        backendAzureRmKey: 'terraform.tfstate'
+
+    - task: TerraformTaskV2@2
+      displayName: Terraform Destroy
+      inputs:
+        provider: 'azurerm'
+        command: 'destroy'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
