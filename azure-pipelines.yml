@@ -6,6 +6,8 @@ name: Azure Pipelines
 variables:
   python.version: '3.7.6'
   terraformPlanOutput: 'solution.plan'
+  vmImageVersion: 'ubuntu-18.04'
+  applicationType: 'HSEQR'
 stages:
 - stage: Provisioning
   displayName: Provisioning
@@ -13,7 +15,7 @@ stages:
   - job: ProvisioningAppService
     displayName: Provisioning AppService
     pool:
-      vmImage: 'ubuntu-18.04'
+      vmImage: $(vmImageVersion)
     steps:
     - task: DownloadSecureFile@1
       name: tfvardef
@@ -74,7 +76,7 @@ stages:
   - job: build_artifacts
     displayName: Build Artifacts
     pool:
-      vmImage: 'ubuntu-18.04'
+      vmImage: $(vmImageVersion)
     steps:
     - task: ArchiveFiles@2
       displayName: Archive FakeRestAPI
@@ -106,6 +108,26 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
         artifactName: 'drop-selenium'
 
+- stage: Deployment
+  jobs:
+  - deployment: deployment_fakerestapi
+    displayName: Deploy FakeRestAPI
+    pool:
+      vmImage: 'ubuntu-18.04'
+    environment: 'TEST'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: Deploy Azure WebApp
+            inputs:
+              azureSubscription: 'EnsureReleaseQulaity'
+              appName: '$(applicationType)-AppService'
+              appType: webApp
+              package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip
+              deploymentMethod: zipDeploy
+
 - stage: Wait
   jobs:
     - job: RunsOnServer
@@ -118,20 +140,22 @@ stages:
 - stage: Destroy
   displayName: Delete deployed resources
   jobs: 
-  - job: ProvisioningAppService
-    displayName: Provisioning AppService
+  - job: DestroyingDeloyedResources
+    displayName: Delete deployed resources
     pool:
-      vmImage: 'ubuntu-18.04'
+      vmImage: $(vmImageVersion)
     steps:
     - task: DownloadSecureFile@1
       name: tfvardef
       displayName: Download terraform.tfvars
       inputs:
         secureFile: 'terraform.tfvars'
+
     - task: InstallSSHKey@0
       inputs:
         knownHostsEntry: 'default'
         sshKeySecureFile: 'id_rsa'
+
     - task: Bash@3
       inputs:
         targetType: 'inline'
