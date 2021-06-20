@@ -5,7 +5,6 @@ trigger:
 name: Azure Pipelines
 variables:
   python.version: '3.7.6'
-  terraform.version: '0.13.4'
 stages:
 - stage: Provisioning
   displayName: Provisioning
@@ -25,7 +24,7 @@ stages:
     - task: TerraformInstaller@0
       displayName: Install Terraform
       inputs:
-        terraformVersion: '0.14.9'
+        terraformVersion: '1.0.0'
     
     - task: TerraformTaskV2@2
       displayName: Terraform Init
