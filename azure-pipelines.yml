@@ -61,6 +61,14 @@ stages:
         commandOptions: '-out $(terraformPlanOutput)'
         environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
 
+    - task: TerraformTaskV1@0
+      displayName: Terraform Apply
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
+
 - stage: Build
   jobs:
   - job: build_artifacts
