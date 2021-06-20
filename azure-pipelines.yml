@@ -71,6 +71,15 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
 
+- stage: Wait
+  jobs:
+    - job: RunsOnServer
+      pool: Server
+      steps:
+      - task: Delay@1
+        inputs:
+          delayForMinutes: '2'
+
 - stage: Build
   jobs:
   - job: build_artifacts
@@ -114,7 +123,7 @@ stages:
     displayName: Deploy FakeRestAPI
     pool:
       vmImage: 'ubuntu-18.04'
-    environment: 'TEST'
+    environment: 'WEBAPP-TEST'
     strategy:
       runOnce:
         deploy:
@@ -128,14 +137,6 @@ stages:
               package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip
               deploymentMethod: 'auto'
 
-- stage: Wait
-  jobs:
-    - job: RunsOnServer
-      pool: Server
-      steps:
-      - task: Delay@1
-        inputs:
-          delayForMinutes: '2'
 
 - stage: Destroy
   displayName: Delete deployed resources
