@@ -50,7 +50,6 @@ stages:
         provider: 'azurerm'
         command: 'init'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-        commandOptions: '-backend-config="access_key=$(arm_access_key)'
         backendServiceArm: 'EnsureReleaseQulaity'
         backendAzureRmResourceGroupName: 'tstate'
         backendAzureRmStorageAccountName: 'tstate2475'
