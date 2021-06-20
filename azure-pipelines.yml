@@ -107,7 +107,7 @@ stages:
         inputs:
           delayForMinutes: '2'
 
-- stage: Delete deployed resources
+- stage: Destroy
   displayName: Delete deployed resources
   jobs: 
   - job: ProvisioningAppService
