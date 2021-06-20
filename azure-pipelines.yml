@@ -31,12 +31,13 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        commandOptions: '-backend-config="access_key=$(arm_access_key)'
         backendServiceArm: 'EnsureReleaseQulaity'
         backendAzureRmResourceGroupName: 'tstate'
         backendAzureRmStorageAccountName: 'tstate2475'
         backendAzureRmContainerName: 'tstate'
         backendAzureRmKey: 'terraform.tfstate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
     - task: TerraformTaskV2@2
       displayName: Terraform Plan
       inputs:
