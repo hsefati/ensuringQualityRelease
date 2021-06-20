@@ -61,4 +61,5 @@ stages:
         provider: 'azurerm'
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        commandOptions: '-out solution.plan'
         environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
