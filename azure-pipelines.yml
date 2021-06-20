@@ -7,7 +7,7 @@ variables:
   python.version: '3.7.6'
   terraformPlanOutput: 'solution.plan'
   vmImageVersion: 'ubuntu-18.04'
-  applicationType: 'HSEQR'
+  applicationType: 'hserq'
 stages:
 - stage: Provisioning
   displayName: Provisioning
@@ -124,9 +124,9 @@ stages:
             inputs:
               azureSubscription: 'EnsureReleaseQulaity'
               appName: '$(applicationType)-AppService'
-              appType: webApp
+              appType: 'webAppLinux'
               package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip
-              deploymentMethod: zipDeploy
+              deploymentMethod: 'auto'
 
 - stage: Wait
   jobs:
