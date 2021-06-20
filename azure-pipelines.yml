@@ -5,6 +5,8 @@ trigger:
 name: Azure Pipelines
 variables:
   python.version: '3.7.6'
+  terraformPlanOutput: 'solution.plan'
+
 stages:
 - stage: Provisioning
   displayName: Provisioning
@@ -33,11 +35,6 @@ stages:
       inputs:
         targetType: 'inline'
         script: 'cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform/'
-      
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: 'ls $(System.DefaultWorkingDirectory)/terraform/'
     
     - task: TerraformInstaller@0
       displayName: Install Terraform
@@ -55,11 +52,20 @@ stages:
         backendAzureRmStorageAccountName: 'tstate2475'
         backendAzureRmContainerName: 'tstate'
         backendAzureRmKey: 'terraform.tfstate'
+
     - task: TerraformTaskV2@2
       displayName: Terraform Plan
       inputs:
         provider: 'azurerm'
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-        commandOptions: '-out solution.plan'
+        commandOptions: '-out $(terraformPlanOutput)'
+        environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
+    
+    - task: TerraformTaskV2@2
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        commandOptions: '$(terraformPlanOutput)'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
