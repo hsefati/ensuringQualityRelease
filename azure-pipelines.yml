@@ -165,7 +165,7 @@ stages:
                   echo "$FILE exists."
                 else
                   #latest version on 21.06.2021
-                  wget https://chromedriver.storage.googleapis.com/index.html?path=92.0.4515.43/
+                  wget https://chromedriver.storage.googleapis.com/89.0.4389.23/chromedriver_linux64.zip
                 fi
                 # install chrome driver
                 unzip chromedriver_linux64.zip
@@ -174,10 +174,10 @@ stages:
                 sudo chmod +x /usr/bin/chromedriver
                 chromium-browser -version
                 chromedriver --version
-                wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w $(WORKSPACE_ID) -s $(WORKSPACE_PRIMARY_KEY)
+                # wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w $(WORKSPACE_ID) -s $(WORKSPACE_PRIMARY_KEY)
               env:
-              WORKSPACE_ID: $(workspaceID)
-              WORKSPACE_PRIMARY_KEY: $(workspacePrimaryKey)
+                WORKSPACE_ID: $(workspaceID)
+                WORKSPACE_PRIMARY_KEY: $(workspacePrimaryKey)
 
           - download: current
             displayName: 'Download Selenium'
