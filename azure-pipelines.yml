@@ -165,7 +165,7 @@ stages:
                   echo "$FILE exists."
                 else
                   #latest version on 21.06.2021
-                  wget https://chromedriver.storage.googleapis.com/index.html?path=92.0.4515.43/
+                  wget https://chromedriver.storage.googleapis.com/92.0.4515.43/chromedriver_linux64.zip
                 fi
                 # install chrome driver
                 unzip chromedriver_linux64.zip
