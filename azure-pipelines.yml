@@ -175,9 +175,9 @@ stages:
                 chromium-browser -version
                 chromedriver --version
                 # wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w $(WORKSPACE_ID) -s $(WORKSPACE_PRIMARY_KEY)
-              env:
-                WORKSPACE_ID: $(workspaceID)
-                WORKSPACE_PRIMARY_KEY: $(workspacePrimaryKey)
+              # env:
+              # WORKSPACE_ID: $(workspaceID)
+              # WORKSPACE_PRIMARY_KEY: $(workspacePrimaryKey)
 
           - download: current
             displayName: 'Download Selenium'
