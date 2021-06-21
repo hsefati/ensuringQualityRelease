@@ -100,7 +100,7 @@ stages:
       displayName: Publish FakeRestAPI artifact
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)/fakerestapi-$(Build.BuildId).zip'
-        artifactName: 'drop-fakerestapi'
+        artifactName: 'fakerestapi'
 
     - task: ArchiveFiles@2
       displayName: Archive Selenium
@@ -115,7 +115,7 @@ stages:
       displayName: Publish Selenium artifact
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
-        artifactName: 'drop-selenium'
+        artifactName: 'selenium'
 
 - stage: Deployment
   jobs:
@@ -134,7 +134,7 @@ stages:
               azureSubscription: 'EnsureReleaseQulaity'
               appName: '$(applicationType)-AppService'
               appType: 'webAppLinux'
-              package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip
+              package: $(Pipeline.Workspace)/fakerestapi/fakerestapi-$(Build.BuildId).zip
               deploymentMethod: 'auto'
 
   - deployment: VMDeploy
