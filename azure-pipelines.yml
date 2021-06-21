@@ -150,30 +150,24 @@ stages:
             displayName: 'Install Dependencies'
             inputs:
               targetType: 'inline'
-              script: |
-                #! /bin/bash
-                
-                sudo apt-get upgrade -y
+              bash: |
+                pwd
+                hostname
+                uname -a
+                cat /etc/*-release
+                sudo apt-get install software-properties-common -y
+                sudo apt-add-repository universe -y
+                sudo apt-get update -y
                 sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
+                sudo apt-get install -y chromium-chromedriver
+                python3 -m pip install --upgrade pip
                 pip3 install selenium
-                
-                # download chrome driver
-                FILE=chromedriver_linux64.zip
-                if [ -f "$FILE" ]; then
-                  echo "$FILE exists."
-                else
-                  #latest version on 21.06.2021
-                  wget https://chromedriver.storage.googleapis.com/92.0.4515.43/chromedriver_linux64.zip
-                fi
-                # install chrome driver
-                unzip chromedriver_linux64.zip
-                sudo mv chromedriver /usr/bin/chromedriver
-                sudo chown root:root /usr/bin/chromedriver
-                sudo chmod +x /usr/bin/chromedriver
-                chromium-browser -version
-                chromedriver --version
+                python3 -V
+                pip3 -V
+                /usr/bin/chromium-browser --version
+                /usr/bin/chromedriver --version
               #   wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w $(WORKSPACE_ID) -s $(WORKSPACE_PRIMARY_KEY)
               # env:
               # WORKSPACE_ID: $(workspaceID)
