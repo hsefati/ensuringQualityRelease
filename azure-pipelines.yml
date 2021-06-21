@@ -9,76 +9,76 @@ variables:
   vmImageVersion: 'ubuntu-18.04'
   applicationType: 'hserq'
 stages:
-- stage: Provisioning
-  displayName: Provisioning
-  jobs: 
-  - job: ProvisioningAppService
-    displayName: Provisioning AppService
-    pool:
-      vmImage: $(vmImageVersion)
-    steps:
-    - task: DownloadSecureFile@1
-      name: tfvardef
-      displayName: Download terraform.tfvars
-      inputs:
-        secureFile: 'terraform.tfvars'
-    - task: InstallSSHKey@0
-      inputs:
-        knownHostsEntry: 'default'
-        sshKeySecureFile: 'id_rsa'
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: |
-          ls /home/vsts/work/_temp/
+# - stage: Provisioning
+#   displayName: Provisioning
+#   jobs: 
+#   - job: ProvisioningAppService
+#     displayName: Provisioning AppService
+#     pool:
+#       vmImage: $(vmImageVersion)
+#     steps:
+#     - task: DownloadSecureFile@1
+#       name: tfvardef
+#       displayName: Download terraform.tfvars
+#       inputs:
+#         secureFile: 'terraform.tfvars'
+#     - task: InstallSSHKey@0
+#       inputs:
+#         knownHostsEntry: 'default'
+#         sshKeySecureFile: 'id_rsa'
+#     - task: Bash@3
+#       inputs:
+#         targetType: 'inline'
+#         script: |
+#           ls /home/vsts/work/_temp/
     
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: 'cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform/'
+#     - task: Bash@3
+#       inputs:
+#         targetType: 'inline'
+#         script: 'cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform/'
     
-    - task: TerraformInstaller@0
-      displayName: Install Terraform
-      inputs:
-        terraformVersion: '1.0.0'
+#     - task: TerraformInstaller@0
+#       displayName: Install Terraform
+#       inputs:
+#         terraformVersion: '1.0.0'
     
-    - task: TerraformTaskV2@2
-      displayName: Terraform Init
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-        backendServiceArm: 'EnsureReleaseQulaity'
-        backendAzureRmResourceGroupName: 'tstate'
-        backendAzureRmStorageAccountName: 'tstate2475'
-        backendAzureRmContainerName: 'tstate'
-        backendAzureRmKey: 'terraform.tfstate'
+#     - task: TerraformTaskV2@2
+#       displayName: Terraform Init
+#       inputs:
+#         provider: 'azurerm'
+#         command: 'init'
+#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#         backendServiceArm: 'EnsureReleaseQulaity'
+#         backendAzureRmResourceGroupName: 'tstate'
+#         backendAzureRmStorageAccountName: 'tstate2475'
+#         backendAzureRmContainerName: 'tstate'
+#         backendAzureRmKey: 'terraform.tfstate'
 
-    - task: TerraformTaskV2@2
-      displayName: Terraform Plan
-      inputs:
-        provider: 'azurerm'
-        command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-        commandOptions: '-out $(terraformPlanOutput)'
-        environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
+#     - task: TerraformTaskV2@2
+#       displayName: Terraform Plan
+#       inputs:
+#         provider: 'azurerm'
+#         command: 'plan'
+#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#         commandOptions: '-out $(terraformPlanOutput)'
+#         environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
 
-    - task: TerraformTaskV1@0
-      displayName: Terraform Apply
-      inputs:
-        provider: 'azurerm'
-        command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-        environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
+#     - task: TerraformTaskV1@0
+#       displayName: Terraform Apply
+#       inputs:
+#         provider: 'azurerm'
+#         command: 'apply'
+#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#         environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
 
-- stage: Wait
-  jobs:
-    - job: RunsOnServer
-      pool: Server
-      steps:
-      - task: Delay@1
-        inputs:
-          delayForMinutes: '2'
+# - stage: Wait
+#   jobs:
+#     - job: RunsOnServer
+#       pool: Server
+#       steps:
+#       - task: Delay@1
+#         inputs:
+#           delayForMinutes: '2'
 
 - stage: Build
   jobs:
@@ -138,57 +138,57 @@ stages:
               deploymentMethod: 'auto'
 
 
-- stage: Destroy
-  displayName: Delete deployed resources
-  jobs: 
-  - job: DestroyingDeloyedResources
-    displayName: Delete deployed resources
-    pool:
-      vmImage: $(vmImageVersion)
-    steps:
-    - task: DownloadSecureFile@1
-      name: tfvardef
-      displayName: Download terraform.tfvars
-      inputs:
-        secureFile: 'terraform.tfvars'
+# - stage: Destroy
+#   displayName: Delete deployed resources
+#   jobs: 
+#   - job: DestroyingDeloyedResources
+#     displayName: Delete deployed resources
+#     pool:
+#       vmImage: $(vmImageVersion)
+#     steps:
+#     - task: DownloadSecureFile@1
+#       name: tfvardef
+#       displayName: Download terraform.tfvars
+#       inputs:
+#         secureFile: 'terraform.tfvars'
 
-    - task: InstallSSHKey@0
-      inputs:
-        knownHostsEntry: 'default'
-        sshKeySecureFile: 'id_rsa'
+#     - task: InstallSSHKey@0
+#       inputs:
+#         knownHostsEntry: 'default'
+#         sshKeySecureFile: 'id_rsa'
 
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: |
-          ls /home/vsts/work/_temp/
+#     - task: Bash@3
+#       inputs:
+#         targetType: 'inline'
+#         script: |
+#           ls /home/vsts/work/_temp/
     
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: 'cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform/'
+#     - task: Bash@3
+#       inputs:
+#         targetType: 'inline'
+#         script: 'cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform/'
     
-    - task: TerraformInstaller@0
-      displayName: Install Terraform
-      inputs:
-        terraformVersion: '1.0.0'
+#     - task: TerraformInstaller@0
+#       displayName: Install Terraform
+#       inputs:
+#         terraformVersion: '1.0.0'
     
-    - task: TerraformTaskV2@2
-      displayName: Terraform Init
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-        backendServiceArm: 'EnsureReleaseQulaity'
-        backendAzureRmResourceGroupName: 'tstate'
-        backendAzureRmStorageAccountName: 'tstate2475'
-        backendAzureRmContainerName: 'tstate'
-        backendAzureRmKey: 'terraform.tfstate'
+#     - task: TerraformTaskV2@2
+#       displayName: Terraform Init
+#       inputs:
+#         provider: 'azurerm'
+#         command: 'init'
+#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#         backendServiceArm: 'EnsureReleaseQulaity'
+#         backendAzureRmResourceGroupName: 'tstate'
+#         backendAzureRmStorageAccountName: 'tstate2475'
+#         backendAzureRmContainerName: 'tstate'
+#         backendAzureRmKey: 'terraform.tfstate'
 
-    - task: TerraformTaskV2@2
-      displayName: Terraform Destroy
-      inputs:
-        provider: 'azurerm'
-        command: 'destroy'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-        environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
+#     - task: TerraformTaskV2@2
+#       displayName: Terraform Destroy
+#       inputs:
+#         provider: 'azurerm'
+#         command: 'destroy'
+#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#         environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
