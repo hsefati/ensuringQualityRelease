@@ -7,7 +7,7 @@ variables:
   python.version: '3.7.6'
   terraformPlanOutput: 'solution.plan'
   vmImageVersion: 'ubuntu-18.04'
-  applicationType: 'hserq'
+  applicationType: 'erq'
 stages:
 # - stage: Provisioning
 #   displayName: Provisioning
