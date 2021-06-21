@@ -168,10 +168,10 @@ stages:
                   pip3 -V
                   /usr/bin/chromium-browser --version
                   /usr/bin/chromedriver --version
-                wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w $(WORKSPACE_ID) -s $(WORKSPACE_PRIMARY_KEY)
-              # env:
-              # WORKSPACE_ID: $(workspaceID)
-              # WORKSPACE_PRIMARY_KEY: $(workspacePrimaryKey)
+                  wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w $(WORKSPACE_ID) -s $(WORKSPACE_PRIMARY_KEY)
+                env:
+                WORKSPACE_ID: $(WORKSPACE_ID)
+                WORKSPACE_PRIMARY_KEY: $(WORKSPACE_PRIMARY_KEY)
 
           - download: current
             displayName: 'Download Selenium'
