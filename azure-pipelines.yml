@@ -192,7 +192,7 @@ stages:
               targetType: 'inline'
               script: |
                 unzip -o $(Pipeline.Workspace)/selenium/selenium-$(Build.BuildId).zip -d .
-                sudo -p mkdir /var/logs
+                sudo mkdir -p /var/logs
                 python3 userInterfaceTest.py
                 sudo mv ui-logs.log /var/logs
 
