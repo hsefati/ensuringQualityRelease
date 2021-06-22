@@ -170,6 +170,19 @@ stages:
                   /usr/bin/chromedriver --version
                   wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w 25b9a11f-6c54-4bfe-a79a-82eab0f50a30 -s KLHkJd7lq/L1QF39TGEiMlbGI5Q3OYRfqrJqB69Ow37Zj8YaBKLP/NaFc6XJOZieBkCOBYbv2hxw4ZHlKrJabA==
 
+
+- stage: UITests
+  displayName: User Interface Tests
+  jobs:
+  - deployment: VMRunUITests
+    displayName: Run UI Tests
+    environment:
+      name:  'VM-TEST'
+      resourceType: VirtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
           - download: current
             displayName: 'Download Selenium'
             artifact: selenium
@@ -179,8 +192,8 @@ stages:
               targetType: 'inline'
               script: |
                 unzip -o $(Pipeline.Workspace)/selenium/selenium-$(Build.BuildId).zip -d .
-                sudo mkdir /var/logs
-                python3 uitests.py > ui-logs.log
+                sudo -p mkdir /var/logs
+                python3 userInterfaceTest.py
                 sudo mv ui-logs.log /var/logs
 
 # - stage: Destroy
