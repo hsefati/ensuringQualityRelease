@@ -1,0 +1,185 @@
+{
+	"info": {
+		"_postman_id": "42d305a9-2d1a-4272-89e7-e729ff0ba69f",
+		"name": "Validation Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"userID\", jsonData.data.id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});\r",
+							"pm.test(\"Check is is not null\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).not.null\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{userName}}\",\r\n    \"salary\": \"{{userSalary}}\",\r\n    \"age\": \"{{userAge}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/create",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{userNewName}}\",\r\n    \"salary\": \"{{userNewsalary}}\",\r\n    \"age\": \"{{userNewAge}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/update/{{userID}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"update",
+						"{{userID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});\r",
+							"pm.test(\"Check employee name\", function () {\r",
+							"    pm.expect(jsonData.data.employee_name).to.equal(\"Quinn Flynn\")\r",
+							"});\r",
+							"pm.test(\"Check Employee age\", function () {\r",
+							"    pm.expect(jsonData.data.employee_age).to.equal(22)\r",
+							"});\r",
+							"pm.test(\"Check Employee Salary\", function () {\r",
+							"    pm.expect(jsonData.data.employee_salary).to.equal(342000)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/employee/23",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"employee",
+						"23"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/delete/{{userID}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"delete",
+						"{{userID}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
