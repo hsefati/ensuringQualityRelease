@@ -73,7 +73,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"{{userNewName}}\",\r\n    \"salary\": \"{{userNewsalary}}\",\r\n    \"age\": \"{{userNewAge}}\"\r\n}",
+					"raw": "{\r\n    \"name\": \"{{userNewName}}\",\r\n    \"salary\": \"{{userNewSalary}}\",\r\n    \"age\": \"{{userNewAge}}\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
