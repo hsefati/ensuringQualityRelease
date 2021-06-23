@@ -117,25 +117,25 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
         artifactName: 'selenium'
 
-# - stage: Deployment
-#   jobs:
-#   - deployment: deployment_fakerestapi
-#     displayName: Deploy FakeRestAPI
-#     pool:
-#       vmImage: 'ubuntu-18.04'
-#     environment: 'WEBAPP-TEST'
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - task: AzureWebApp@1
-#             displayName: Deploy Azure WebApp
-#             inputs:
-#               azureSubscription: 'EnsureReleaseQulaity'
-#               appName: '$(applicationType)-AppService'
-#               appType: 'webAppLinux'
-#               package: $(Pipeline.Workspace)/fakerestapi/fakerestapi-$(Build.BuildId).zip
-#               deploymentMethod: 'auto'
+- stage: Deployment
+  jobs:
+  - deployment: deployment_fakerestapi
+    displayName: Deploy FakeRestAPI
+    pool:
+      vmImage: 'ubuntu-18.04'
+    environment: 'WEBAPP-TEST'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: Deploy Azure WebApp
+            inputs:
+              azureSubscription: 'EnsureReleaseQulaity'
+              appName: '$(applicationType)-AppService'
+              appType: 'webAppLinux'
+              package: $(Pipeline.Workspace)/fakerestapi/fakerestapi-$(Build.BuildId).zip
+              deploymentMethod: 'auto'
 
 #   - deployment: VMDeploy
 #     displayName: VM Deploy
