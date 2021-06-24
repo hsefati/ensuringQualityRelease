@@ -247,20 +247,14 @@ stages:
         jmeterVersion: '5.4.1'
     - task: Bash@3
       displayName: EnduranceTest
+      targetType: 'inline'
       inputs:
-        script: 'jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx \
-                           -l automatedtesting/jmeter/log/endurancepages.csv \
-                           -e -f -o automatedtesting/jmeter/endurance-test-html-report \
-                           -j automatedtesting/jmeter/log/enduranceresults.log'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        script: 'jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx -l automatedtesting/jmeter/log/endurancepages.csv -e -f -o automatedtesting/jmeter/endurance-test-html-report -j automatedtesting/jmeter/log/enduranceresults.log'
     - task: Bash@3
       displayName: StressTest
+      targetType: 'inline'
       inputs:
-        script: 'jmeter -n -t automatedtesting/jmeter/StressTestSuite.jmx \
-                           -l automatedtesting/jmeter/log/stresspages.csv \
-                           -e -f -o automatedtesting/jmeter/stress-test-html-report \
-                           -j automatedtesting/jmeter/log/stressresults.log'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        script: 'jmeter -n -t automatedtesting/jmeter/StressTestSuite.jmx -l automatedtesting/jmeter/log/stresspages.csv -e -f -o automatedtesting/jmeter/stress-test-html-report -j automatedtesting/jmeter/log/stressresults.log'
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: 'automatedtesting/jmeter'
