@@ -214,25 +214,58 @@ stages:
     - task: CmdLine@2
       displayName: Run Regression Tests
       inputs:
-        script: 'newman run automatedtesting/postman/Regression.postman_collection.json -e automatedtesting/postman/envVariable.postman_environment.json --delay-request 5000 --bail newman -x --reporters cli,junit --reporter-junit-export Results/RegressionTests.xml --suppress-exit-code'
+        script: 'newman run automatedtesting/postman/Regression.postman_collection.json \
+                        -e automatedtesting/postman/envVariable.postman_environment.json \
+                        --delay-request 5000 --bail newman -x --reporters cli,junit \
+                        --reporter-junit-export Results/RegressionTests.xml --suppress-exit-code'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       continueOnError: true
     - task: CmdLine@2
       displayName: Run Data Validation Tests
       inputs:
-        script: 'newman run automatedtesting/postman/Validation.postman_collection.json -e automatedtesting/postman/envVariable.postman_environment.json --delay-request 5000 --bail newman -x --reporters cli,junit --reporter-junit-export Results/DataValidationTests.xml --suppress-exit-code'
+        script: 'newman run automatedtesting/postman/Validation.postman_collection.json \
+                        -e automatedtesting/postman/envVariable.postman_environment.json \
+                        --delay-request 5000 --bail newman -x --reporters cli,junit \
+                        --reporter-junit-export Results/DataValidationTests.xml --suppress-exit-code'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       continueOnError: true
-    - task: CmdLine@2
-      inputs:
-        script: 'ls -la ./Results/'
-        workingDirectory: '$(System.DefaultWorkingDirectory)'
     - task: PublishTestResults@2
       displayName: Publish Test Reports
       condition: always()
       inputs:
         testResultsFormat: 'JUnit'
         testResultsFiles: '$(System.DefaultWorkingDirectory)/Results/*.xml'
+
+- stage: JMeterTests
+  displayName: JMeter Tests
+  jobs:
+  - job: JMeterTests
+    displayName: JMeterTests
+    steps: 
+    - task: JMeterInstaller@0
+      inputs:
+        jmeterVersion: '5.4.1'
+    - task: Bash@3
+      displayName: EnduranceTest
+      inputs:
+        targetType: 'inline'
+        script: 'jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx \
+                           -l automatedtesting/jmeter/log/endurancepages.csv \
+                           -j automatedtesting/jmeter/log/enduranceresults.log \
+                           -e -f -o automatedtesting/jmeter/endurancereport-test-html-report'
+    - task: Bash@3
+      displayName: StressTest
+      inputs:
+        targetType: 'inline'
+        script: 'jmeter -n -t automatedtesting/jmeter/StressTestSuite.jmx \
+                           -l automatedtesting/jmeter/log/stresspages.csv \
+                           -j automatedtesting/jmeter/log/stressresults.log \
+                           -e -f -o automatedtesting/jmeter/stressreport-test-html-report'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: 'automatedtesting/jmeter'
+        ArtifactName: 'jmeterResult'
+        publishLocation: 'Container'
 
 # - stage: Destroy
 #   displayName: Delete deployed resources
