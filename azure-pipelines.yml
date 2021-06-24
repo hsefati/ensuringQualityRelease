@@ -248,19 +248,19 @@ stages:
     - task: Bash@3
       displayName: EnduranceTest
       inputs:
-        targetType: 'inline'
         script: 'jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx \
                            -l automatedtesting/jmeter/log/endurancepages.csv \
-                           -e -f -o automatedtesting/jmeter/endurancereport-test-html-report \
+                           -e -f -o automatedtesting/jmeter/endurance-test-html-report \
                            -j automatedtesting/jmeter/log/enduranceresults.log'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
     - task: Bash@3
       displayName: StressTest
       inputs:
-        targetType: 'inline'
         script: 'jmeter -n -t automatedtesting/jmeter/StressTestSuite.jmx \
                            -l automatedtesting/jmeter/log/stresspages.csv \
-                           -e -f -o automatedtesting/jmeter/stressreport-test-html-report \
+                           -e -f -o automatedtesting/jmeter/stress-test-html-report \
                            -j automatedtesting/jmeter/log/stressresults.log'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: 'automatedtesting/jmeter'
