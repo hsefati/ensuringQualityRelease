@@ -249,7 +249,10 @@ stages:
       displayName: EnduranceTest
       inputs:
         targetType: 'inline'
-        script: 'jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx -l automatedtesting/jmeter/log/endurancepages.csv -e -f -o automatedtesting/jmeter/endurance-test-html-report -j automatedtesting/jmeter/log/enduranceresults.log'
+        script: 'jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx \
+                        -l automatedtesting/jmeter/log/endurancepages.csv \
+                        -e -f -o automatedtesting/jmeter/endurance-test-html-report \
+                        -j automatedtesting/jmeter/log/enduranceresults.log'
     - task: Bash@3
       displayName: StressTest
       inputs:
