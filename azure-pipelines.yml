@@ -117,124 +117,124 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
         artifactName: 'selenium'
 
-# - stage: Deployment
-#   jobs:
-#   - deployment: deployment_fakerestapi
-#     displayName: Deploy FakeRestAPI
-#     pool:
-#       vmImage: 'ubuntu-18.04'
-#     environment: 'WEBAPP-TEST'
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - task: AzureWebApp@1
-#             displayName: Deploy Azure WebApp
-#             inputs:
-#               azureSubscription: 'EnsureReleaseQulaity'
-#               appName: '$(applicationType)-AppService'
-#               appType: 'webAppLinux'
-#               package: $(Pipeline.Workspace)/fakerestapi/fakerestapi-$(Build.BuildId).zip
-#               deploymentMethod: 'auto'
+- stage: Deployment
+  jobs:
+  - deployment: deployment_fakerestapi
+    displayName: Deploy FakeRestAPI
+    pool:
+      vmImage: 'ubuntu-18.04'
+    environment: 'WEBAPP-TEST'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: Deploy Azure WebApp
+            inputs:
+              azureSubscription: 'EnsureReleaseQulaity'
+              appName: '$(applicationType)-AppService'
+              appType: 'webAppLinux'
+              package: $(Pipeline.Workspace)/fakerestapi/fakerestapi-$(Build.BuildId).zip
+              deploymentMethod: 'auto'
 
-#   - deployment: VMDeploy
-#     displayName: VM Deploy
-#     environment:
-#       name:  'VM-TEST'
-#       resourceType: VirtualMachine
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - task: Bash@3
-#             displayName: 'Install Dependencies'
-#             inputs:
-#               targetType: 'inline'
-#               script: |                
-#                   pwd
-#                   hostname
-#                   uname -a
-#                   cat /etc/*-release
-#                   sudo apt-get install software-properties-common -y
-#                   sudo apt-add-repository universe -y
-#                   sudo apt-get update -y
-#                   sudo apt-get install python3-pip -y
-#                   sudo apt-get install unzip -y
-#                   sudo apt-get install -y chromium-browser
-#                   sudo apt-get install -y chromium-chromedriver
-#                   python3 -m pip install --upgrade pip
-#                   pip3 install selenium
-#                   python3 -V
-#                   pip3 -V
-#                   /usr/bin/chromium-browser --version
-#                   /usr/bin/chromedriver --version
-#                   wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w 25b9a11f-6c54-4bfe-a79a-82eab0f50a30 -s KLHkJd7lq/L1QF39TGEiMlbGI5Q3OYRfqrJqB69Ow37Zj8YaBKLP/NaFc6XJOZieBkCOBYbv2hxw4ZHlKrJabA==
+  - deployment: VMDeploy
+    displayName: VM Deploy
+    environment:
+      name:  'VM-TEST'
+      resourceType: VirtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: Bash@3
+            displayName: 'Install Dependencies'
+            inputs:
+              targetType: 'inline'
+              script: |                
+                  pwd
+                  hostname
+                  uname -a
+                  cat /etc/*-release
+                  sudo apt-get install software-properties-common -y
+                  sudo apt-add-repository universe -y
+                  sudo apt-get update -y
+                  sudo apt-get install python3-pip -y
+                  sudo apt-get install unzip -y
+                  sudo apt-get install -y chromium-browser
+                  sudo apt-get install -y chromium-chromedriver
+                  python3 -m pip install --upgrade pip
+                  pip3 install selenium
+                  python3 -V
+                  pip3 -V
+                  /usr/bin/chromium-browser --version
+                  /usr/bin/chromedriver --version
+                  wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w 25b9a11f-6c54-4bfe-a79a-82eab0f50a30 -s KLHkJd7lq/L1QF39TGEiMlbGI5Q3OYRfqrJqB69Ow37Zj8YaBKLP/NaFc6XJOZieBkCOBYbv2hxw4ZHlKrJabA==
 
 
-# - stage: UITests
-#   displayName: User Interface Tests
-#   jobs:
-#   - deployment: VMRunUITests
-#     displayName: Run UI Tests
-#     environment:
-#       name:  'VM-TEST'
-#       resourceType: VirtualMachine
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - download: current
-#             displayName: 'Download Selenium'
-#             artifact: selenium
-#           - task: Bash@3
-#             displayName: UI Tests
-#             inputs:
-#               targetType: 'inline'
-#               script: |
-#                 unzip -o $(Pipeline.Workspace)/selenium/selenium-$(Build.BuildId).zip -d .
-#                 sudo mkdir -p /var/logs
-#                 python3 userInterfaceTest.py
-#                 sudo mv ui-logs.log /var/logs
+- stage: UITests
+  displayName: User Interface Tests
+  jobs:
+  - deployment: VMRunUITests
+    displayName: Run UI Tests
+    environment:
+      name:  'VM-TEST'
+      resourceType: VirtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            displayName: 'Download Selenium'
+            artifact: selenium
+          - task: Bash@3
+            displayName: UI Tests
+            inputs:
+              targetType: 'inline'
+              script: |
+                unzip -o $(Pipeline.Workspace)/selenium/selenium-$(Build.BuildId).zip -d .
+                sudo mkdir -p /var/logs
+                python3 userInterfaceTest.py
+                sudo mv ui-logs.log /var/logs
 
-# - stage: IntegrationTests
-#   displayName: Integration Tests
-#   jobs:
-#   - job: PostmanTests
-#     displayName: PostmanTests
-#     steps: 
-#     - task: NodeTool@0
-#       displayName: Install Node v14.X
-#       inputs:
-#         versionSpec: '14.x'
-#     - task: CmdLine@2
-#       displayName: Install Newman
-#       inputs:
-#         script: 'npm install newman'
-#         workingDirectory: '$(System.DefaultWorkingDirectory)'
-#     - task: CmdLine@2
-#       displayName: Run Regression Tests
-#       inputs:
-#         script: 'newman run automatedtesting/postman/Regression.postman_collection.json \
-#                         -e automatedtesting/postman/envVariable.postman_environment.json \
-#                         --delay-request 5000 --bail newman -x --reporters cli,junit \
-#                         --reporter-junit-export Results/RegressionTests.xml --suppress-exit-code'
-#         workingDirectory: '$(System.DefaultWorkingDirectory)'
-#       continueOnError: true
-#     - task: CmdLine@2
-#       displayName: Run Data Validation Tests
-#       inputs:
-#         script: 'newman run automatedtesting/postman/Validation.postman_collection.json \
-#                         -e automatedtesting/postman/envVariable.postman_environment.json \
-#                         --delay-request 5000 --bail newman -x --reporters cli,junit \
-#                         --reporter-junit-export Results/DataValidationTests.xml --suppress-exit-code'
-#         workingDirectory: '$(System.DefaultWorkingDirectory)'
-#       continueOnError: true
-#     - task: PublishTestResults@2
-#       displayName: Publish Test Reports
-#       condition: always()
-#       inputs:
-#         testResultsFormat: 'JUnit'
-#         testResultsFiles: '$(System.DefaultWorkingDirectory)/Results/*.xml'
+- stage: IntegrationTests
+  displayName: Integration Tests
+  jobs:
+  - job: PostmanTests
+    displayName: PostmanTests
+    steps: 
+    - task: NodeTool@0
+      displayName: Install Node v14.X
+      inputs:
+        versionSpec: '14.x'
+    - task: CmdLine@2
+      displayName: Install Newman
+      inputs:
+        script: 'npm install newman'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+    - task: CmdLine@2
+      displayName: Run Regression Tests
+      inputs:
+        script: 'newman run automatedtesting/postman/Regression.postman_collection.json \
+                        -e automatedtesting/postman/envVariable.postman_environment.json \
+                        --delay-request 5000 --bail newman -x --reporters cli,junit \
+                        --reporter-junit-export Results/RegressionTests.xml --suppress-exit-code'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+      continueOnError: true
+    - task: CmdLine@2
+      displayName: Run Data Validation Tests
+      inputs:
+        script: 'newman run automatedtesting/postman/Validation.postman_collection.json \
+                        -e automatedtesting/postman/envVariable.postman_environment.json \
+                        --delay-request 5000 --bail newman -x --reporters cli,junit \
+                        --reporter-junit-export Results/DataValidationTests.xml --suppress-exit-code'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+      continueOnError: true
+    - task: PublishTestResults@2
+      displayName: Publish Test Reports
+      condition: always()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '$(System.DefaultWorkingDirectory)/Results/*.xml'
 
 - stage: JMeterTests
   displayName: JMeter Tests
@@ -249,10 +249,7 @@ stages:
       displayName: EnduranceTest
       inputs:
         targetType: 'inline'
-        script: 'jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx \
-                        -l automatedtesting/jmeter/log/endurancepages.csv \
-                        -e -f -o automatedtesting/jmeter/endurance-test-html-report \
-                        -j automatedtesting/jmeter/log/enduranceresults.log'
+        script: 'jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx -l automatedtesting/jmeter/log/endurancepages.csv -e -f -o automatedtesting/jmeter/endurance-test-html-report -j automatedtesting/jmeter/log/enduranceresults.log'
     - task: Bash@3
       displayName: StressTest
       inputs:
