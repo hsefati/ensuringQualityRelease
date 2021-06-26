@@ -229,6 +229,10 @@ stages:
                         --reporter-junit-export Results/DataValidationTests.xml --suppress-exit-code'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
       continueOnError: true
+    - task: CmdLine@2
+      inputs:
+        script: 'ls'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
     - task: PublishTestResults@2
       displayName: Publish Test Reports
       condition: always()
