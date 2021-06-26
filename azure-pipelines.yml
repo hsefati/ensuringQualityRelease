@@ -231,7 +231,7 @@ stages:
       continueOnError: true
     - task: CmdLine@2
       inputs:
-        script: 'ls'
+        script: 'ls -la ./Results/'
         workingDirectory: '$(System.DefaultWorkingDirectory)'
     - task: PublishTestResults@2
       displayName: Publish Test Reports
