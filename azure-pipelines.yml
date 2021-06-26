@@ -9,76 +9,76 @@ variables:
   vmImageVersion: 'ubuntu-18.04'
   applicationType: 'erq'
 stages:
-# - stage: Provisioning
-#   displayName: Provisioning
-#   jobs: 
-#   - job: ProvisioningAppService
-#     displayName: Provisioning AppService
-#     pool:
-#       vmImage: $(vmImageVersion)
-#     steps:
-#     - task: DownloadSecureFile@1
-#       name: tfvardef
-#       displayName: Download terraform.tfvars
-#       inputs:
-#         secureFile: 'terraform.tfvars'
-#     - task: InstallSSHKey@0
-#       inputs:
-#         knownHostsEntry: 'default'
-#         sshKeySecureFile: 'id_rsa'
-#     - task: Bash@3
-#       inputs:
-#         targetType: 'inline'
-#         script: |
-#           ls /home/vsts/work/_temp/
+- stage: Provisioning
+  displayName: Provisioning
+  jobs: 
+  - job: ProvisioningAppService
+    displayName: Provisioning AppService
+    pool:
+      vmImage: $(vmImageVersion)
+    steps:
+    - task: DownloadSecureFile@1
+      name: tfvardef
+      displayName: Download terraform.tfvars
+      inputs:
+        secureFile: 'terraform.tfvars'
+    - task: InstallSSHKey@0
+      inputs:
+        knownHostsEntry: 'default'
+        sshKeySecureFile: 'id_rsa'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          ls /home/vsts/work/_temp/
     
-#     - task: Bash@3
-#       inputs:
-#         targetType: 'inline'
-#         script: 'cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform/'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform/'
     
-#     - task: TerraformInstaller@0
-#       displayName: Install Terraform
-#       inputs:
-#         terraformVersion: '1.0.0'
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: '1.0.0'
     
-#     - task: TerraformTaskV2@2
-#       displayName: Terraform Init
-#       inputs:
-#         provider: 'azurerm'
-#         command: 'init'
-#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-#         backendServiceArm: 'EnsureReleaseQulaity'
-#         backendAzureRmResourceGroupName: 'tstate'
-#         backendAzureRmStorageAccountName: 'tstate2475'
-#         backendAzureRmContainerName: 'tstate'
-#         backendAzureRmKey: 'terraform.tfstate'
+    - task: TerraformTaskV2@2
+      displayName: Terraform Init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        backendServiceArm: 'EnsureReleaseQulaity'
+        backendAzureRmResourceGroupName: 'tstate'
+        backendAzureRmStorageAccountName: 'tstate2475'
+        backendAzureRmContainerName: 'tstate'
+        backendAzureRmKey: 'terraform.tfstate'
 
-#     - task: TerraformTaskV2@2
-#       displayName: Terraform Plan
-#       inputs:
-#         provider: 'azurerm'
-#         command: 'plan'
-#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-#         commandOptions: '-out $(terraformPlanOutput)'
-#         environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
+    - task: TerraformTaskV2@2
+      displayName: Terraform Plan
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        commandOptions: '-out $(terraformPlanOutput)'
+        environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
 
-#     - task: TerraformTaskV1@0
-#       displayName: Terraform Apply
-#       inputs:
-#         provider: 'azurerm'
-#         command: 'apply'
-#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-#         environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
+    - task: TerraformTaskV1@0
+      displayName: Terraform Apply
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        environmentServiceNameAzureRM: 'EnsureReleaseQulaity'
 
-# - stage: Wait
-#   jobs:
-#     - job: RunsOnServer
-#       pool: Server
-#       steps:
-#       - task: Delay@1
-#         inputs:
-#           delayForMinutes: '2'
+- stage: Wait
+  jobs:
+    - job: RunsOnServer
+      pool: Server
+      steps:
+      - task: Delay@1
+        inputs:
+          delayForMinutes: '2'
 
 - stage: Build
   jobs:
@@ -171,30 +171,30 @@ stages:
                   wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w 25b9a11f-6c54-4bfe-a79a-82eab0f50a30 -s KLHkJd7lq/L1QF39TGEiMlbGI5Q3OYRfqrJqB69Ow37Zj8YaBKLP/NaFc6XJOZieBkCOBYbv2hxw4ZHlKrJabA==
 
 
-# - stage: UITests
-#   displayName: User Interface Tests
-#   jobs:
-#   - deployment: VMRunUITests
-#     displayName: Run UI Tests
-#     environment:
-#       name:  'VM-TEST'
-#       resourceType: VirtualMachine
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - download: current
-#             displayName: 'Download Selenium'
-#             artifact: selenium
-#           - task: Bash@3
-#             displayName: UI Tests
-#             inputs:
-#               targetType: 'inline'
-#               script: |
-#                 unzip -o $(Pipeline.Workspace)/selenium/selenium-$(Build.BuildId).zip -d .
-#                 sudo mkdir -p /var/logs
-#                 python3 userInterfaceTest.py
-#                 sudo mv ui-logs.log /var/logs
+- stage: UITests
+  displayName: User Interface Tests
+  jobs:
+  - deployment: VMRunUITests
+    displayName: Run UI Tests
+    environment:
+      name:  'VM-TEST'
+      resourceType: VirtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            displayName: 'Download Selenium'
+            artifact: selenium
+          - task: Bash@3
+            displayName: UI Tests
+            inputs:
+              targetType: 'inline'
+              script: |
+                unzip -o $(Pipeline.Workspace)/selenium/selenium-$(Build.BuildId).zip -d .
+                sudo mkdir -p /var/logs
+                python3 userInterfaceTest.py
+                sudo mv ui-logs.log /var/logs
 
 - stage: IntegrationTests
   displayName: Integration Tests
@@ -234,30 +234,30 @@ stages:
         testResultsFormat: 'JUnit'
         testResultsFiles: '$(System.DefaultWorkingDirectory)/Results/*.xml'
 
-# - stage: JMeterTests
-#   displayName: JMeter Tests
-#   jobs:
-#   - job: JMeterTests
-#     displayName: JMeterTests
-#     steps: 
-#     - task: JMeterInstaller@0
-#       inputs:
-#         jmeterVersion: '5.4.1'
-#     - task: Bash@3
-#       displayName: EnduranceTest
-#       inputs:
-#         targetType: 'inline'
-#         script: 'jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx -l automatedtesting/jmeter/log/endurancepages.csv -e -f -o automatedtesting/jmeter/endurance-test-html-report -j automatedtesting/jmeter/log/enduranceresults.log'
-#     - task: Bash@3
-#       displayName: StressTest
-#       inputs:
-#         targetType: 'inline'
-#         script: 'jmeter -n -t automatedtesting/jmeter/StressTestSuite.jmx -l automatedtesting/jmeter/log/stresspages.csv -e -f -o automatedtesting/jmeter/stress-test-html-report -j automatedtesting/jmeter/log/stressresults.log'
-#     - task: PublishBuildArtifacts@1
-#       inputs:
-#         PathtoPublish: 'automatedtesting/jmeter'
-#         ArtifactName: 'jmeterResult'
-#         publishLocation: 'Container'
+- stage: JMeterTests
+  displayName: JMeter Tests
+  jobs:
+  - job: JMeterTests
+    displayName: JMeterTests
+    steps: 
+    - task: JMeterInstaller@0
+      inputs:
+        jmeterVersion: '5.4.1'
+    - task: Bash@3
+      displayName: EnduranceTest
+      inputs:
+        targetType: 'inline'
+        script: 'jmeter -n -t automatedtesting/jmeter/EnduranceTestSuite.jmx -l automatedtesting/jmeter/log/endurancepages.csv -e -f -o automatedtesting/jmeter/endurance-test-html-report -j automatedtesting/jmeter/log/enduranceresults.log'
+    - task: Bash@3
+      displayName: StressTest
+      inputs:
+        targetType: 'inline'
+        script: 'jmeter -n -t automatedtesting/jmeter/StressTestSuite.jmx -l automatedtesting/jmeter/log/stresspages.csv -e -f -o automatedtesting/jmeter/stress-test-html-report -j automatedtesting/jmeter/log/stressresults.log'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: 'automatedtesting/jmeter'
+        ArtifactName: 'jmeterResult'
+        publishLocation: 'Container'
 
 # - stage: Destroy
 #   displayName: Delete deployed resources
