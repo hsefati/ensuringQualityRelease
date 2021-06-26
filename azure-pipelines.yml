@@ -78,7 +78,7 @@ stages:
       steps:
       - task: Delay@1
         inputs:
-          delayForMinutes: '2'
+          delayForMinutes: '3'
 
 - stage: Build
   jobs:
@@ -131,7 +131,7 @@ stages:
           - task: AzureWebApp@1
             displayName: Deploy Azure WebApp
             inputs:
-              azureSubscription: 'EnsureReleaseQulaity'
+              azureSubscription: 'RG_ERQ'
               appName: '$(applicationType)-AppService'
               appType: 'webAppLinux'
               package: $(Pipeline.Workspace)/fakerestapi/fakerestapi-$(Build.BuildId).zip
