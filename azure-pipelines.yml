@@ -74,6 +74,7 @@ stages:
 - stage: Wait
   jobs:
     - job: RunsOnServer
+      displayName: Waiting
       pool: Server
       steps:
       - task: Delay@1
@@ -138,7 +139,7 @@ stages:
               deploymentMethod: 'auto'
 
   - deployment: VMConfiguation
-    displayName: VM Deploy
+    displayName: VM Configuation
     environment:
       name:  'VM-CONFIG'
       resourceType: VirtualMachine
@@ -173,7 +174,7 @@ stages:
 
 
 - stage: SeleniumTest
-  displayName: User Interface Tests
+  displayName: Selenium Tests
   jobs:
   - deployment: VMRunUITests
     displayName: Run UI Tests
@@ -198,7 +199,7 @@ stages:
                 sudo mv ui-logs.log /var/logs
 
 - stage: PostmanTests
-  displayName: Integration Tests
+  displayName: Postman Tests
   jobs:
   - job: PostmanTests
     displayName: PostmanTests
