@@ -75,7 +75,7 @@ After creation of the workspace, please make sure that you update WORKSPACE_ID a
 For more information please check these two Links ([1](https://www.cloudsma.com/2018/05/find-azure-log-analytics-keys/) and [2](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/quick-create-workspace-cli) ).  
 The workspace will be used for gathering all required logs and eventually logs analysis.
 
-## Before Pipeline Execution
+## Before Pipeline Run
 To make sure that the pipleine can configure the created VM via terraform, we created the pipeline enviroments.
 However, there is another step, that should be done once after creation of the VM. Therefore, there is waiting stage  
 in the pipeline after terraform is finished. During the waiting period, you need to run the following steps:
@@ -85,7 +85,7 @@ in the pipeline after terraform is finished. During the waiting period, you need
 4. SSH into VM (with help of created SSH key earlier)
 5. Execute the copied bash script
 
-## During Pipeline Execution
+## During Pipeline Run
 
 ## Result of Pipeline Run
 ### Environment Creation & Deployment
