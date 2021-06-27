@@ -123,7 +123,7 @@ stages:
     displayName: Deploy FakeRestAPI
     pool:
       vmImage: 'ubuntu-18.04'
-    environment: 'WEBAPP-TEST'
+    environment: 'WEBAPP-DEPLOY'
     strategy:
       runOnce:
         deploy:
@@ -137,10 +137,10 @@ stages:
               package: $(Pipeline.Workspace)/fakerestapi/fakerestapi-$(Build.BuildId).zip
               deploymentMethod: 'auto'
 
-  - deployment: VMDeploy
+  - deployment: VMConfiguation
     displayName: VM Deploy
     environment:
-      name:  'VM-TEST'
+      name:  'VM-CONFIG'
       resourceType: VirtualMachine
     strategy:
       runOnce:
@@ -172,7 +172,7 @@ stages:
                   sudo /opt/microsoft/omsagent/bin/service_control restart 25b9a11f-6c54-4bfe-a79a-82eab0f50a30
 
 
-- stage: UITests
+- stage: SeleniumTest
   displayName: User Interface Tests
   jobs:
   - deployment: VMRunUITests
@@ -197,7 +197,7 @@ stages:
                 python3 userInterfaceTest.py
                 sudo mv ui-logs.log /var/logs
 
-- stage: IntegrationTests
+- stage: PostmanTests
   displayName: Integration Tests
   jobs:
   - job: PostmanTests
