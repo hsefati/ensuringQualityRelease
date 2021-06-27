@@ -67,7 +67,7 @@ def test_cart_item_removal_function(driver):
 
 def ui_test():
     # configuring the logging format
-    FORMAT = "[%(funcName)s()] %(message)s"
+    FORMAT = "[%(asctime)s-%(funcName)s()] %(message)s"
     logging.basicConfig(format=FORMAT, filename='ui-logs.log', level=logging.INFO)
 
     driver = create_driver()
